@@ -3,16 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <meta name="description" content="SunJoy Global Insurance Calculator - Mobile Optimized PWA">
+    <meta name="description" content="SunJoy Global Insurance Calculator - Mobile Optimized">
     <meta name="theme-color" content="#2563eb">
-    
-    <!-- PWA Meta Tags -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="SunJoy Calc">
-    <link rel="apple-touch-icon" href="icon-192.png">
-    <link rel="manifest" href="manifest.json">
-    
     <title>SunJoy Calculator Mobile</title>
     <style>
         * {
@@ -632,6 +624,7 @@
             margin-top: 20px;
         }
 
+        /* Touch improvements */
         button, .radio-button, .currency-button {
             min-height: 44px;
             min-width: 44px;
@@ -641,12 +634,14 @@
             min-height: 48px;
         }
 
+        /* iOS Safari specific fixes */
         @supports (-webkit-touch-callout: none) {
             .text-input {
-                font-size: 16px;
+                font-size: 16px; /* Prevents zoom on iOS */
             }
         }
 
+        /* Dark mode support */
         @media (prefers-color-scheme: dark) {
             .app-container {
                 background: #1f2937;
@@ -669,53 +664,22 @@
             color: #1e40af;
             text-align: center;
         }
-
-        .install-banner {
-            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-            color: white;
-            padding: 12px 16px;
-            text-align: center;
-            font-size: 12px;
-            display: none;
-            position: sticky;
-            top: 0;
-            z-index: 101;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
-
-        .install-banner.show {
-            display: block;
-        }
-
-        .install-banner button {
-            background: white;
-            color: #16a34a;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            margin-top: 8px;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
-    <div class="install-banner" id="installBanner">
-        <div>📱 ติดตั้งแอปบนหน้าจอหลักเพื่อเข้าถึงง่ายขึ้น</div>
-        <button onclick="promptInstall()">ติดตั้งเลย</button>
-    </div>
-
     <div class="app-container">
+        <!-- Header -->
         <div class="header">
             <div class="header-title">SunJoy Calculator Mobile</div>
             <div class="header-subtitle">Premium Calculator with Rebate & Levy</div>
         </div>
 
+        <!-- Update Notice -->
         <div class="update-notice">
             📊 อัตราแลกเปลี่ยนล่าสุด: USD/THB 32.32, USD/HKD 7.77, HKD/THB 4.16 (1 ต.ค. 2025 19:30)
         </div>
 
+        <!-- Promotion Status -->
         <div id="promotionBanner" class="promotion-banner">
             <div id="promotionText">
                 📅 Promotion Period: October 1 - October 31, 2025 | 
@@ -727,6 +691,7 @@
         </div>
 
         <div class="content">
+            <!-- Input Section -->
             <div class="card">
                 <div class="input-group">
                     <label class="input-label">Payment Option</label>
@@ -805,28 +770,33 @@
                 </div>
             </div>
 
+            <!-- Results Section -->
             <div id="resultsSection"></div>
         </div>
 
+        <!-- Footer -->
         <div class="footer">
             This calculator is for estimation purposes only. Please consult with your financial advisor for official quotes.
             <br><br>
-            <strong>PWA Version</strong> | Add to Home Screen for app-like experience
+            <strong>Mobile-optimized version</strong> | Share this link with friends to use on any smartphone
         </div>
 
+        <!-- Modal for Full Analysis -->
         <div id="modalOverlay" class="modal-overlay" style="display: none;" onclick="closeModal()">
             <div class="modal-content" onclick="event.stopPropagation()">
                 <div class="modal-header">
                     <div class="modal-title">Full Analysis & Breakdown</div>
                     <button class="modal-close" onclick="closeModal()">✕</button>
                 </div>
-                <div class="modal-body" id="modalBody"></div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Analysis content will be inserted here -->
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        let deferredPrompt;
+        // State variables
         let state = {
             paymentOption: '2-pay',
             currency: 'USD',
@@ -841,6 +811,7 @@
             manualLevyAmount: 0
         };
 
+        // Basic rebate table
         const basicRebateTable = {
             '2-pay': {
                 'USD': [{ min: 100000, rate: 4.8 }, { min: 20000, rate: 2 }],
@@ -860,21 +831,24 @@
             }
         };
 
+        // Minimum premiums
         const minimumPremiums = {
             '2-pay': { 'USD': 15000, 'CAD': 18000, 'GBP': 10500, 'RMB': 105000, 'AUD': 22500, 'HKD': 120000 },
             '5-pay': { 'USD': 3000, 'CAD': 3600, 'GBP': 2100, 'RMB': 21000, 'AUD': 4500, 'HKD': 24000 }
         };
 
+        // USD conversion rates
         const usdRates = { 'CAD': 1.26, 'GBP': 0.72, 'RMB': 7.1, 'AUD': 1.5 };
 
+        // Utility functions
         function formatCurrency(amount, curr = null) {
             const currency = curr || state.currency;
             return new Intl.NumberFormat('en-US', {
                 style: 'currency',
                 currency: currency === 'RMB' ? 'CNY' : currency,
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0
-            }).format(Math.round(amount));
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(amount);
         }
 
         function getMinimumPremium() {
@@ -884,6 +858,7 @@
         function getBasicRebateRate(premium = null) {
             const targetPremium = premium || state.annualPremium;
             if (!targetPremium) return 0;
+            
             const rates = basicRebateTable[state.paymentOption][state.currency] || [];
             for (const rateInfo of rates) {
                 if (targetPremium >= rateInfo.min) return rateInfo.rate;
@@ -901,13 +876,21 @@
         function calculateLevy(premium = null) {
             const targetPremium = premium || state.annualPremium;
             if (!targetPremium) return { yearly: 0, total: 0 };
+            
+            // If manual levy is enabled, use the manual amount
             if (state.useManualLevy && state.manualLevyAmount > 0) {
                 const paymentYears = state.paymentOption === '2-pay' ? 2 : 5;
-                return { yearly: state.manualLevyAmount, total: state.manualLevyAmount * paymentYears };
+                return { 
+                    yearly: state.manualLevyAmount, 
+                    total: state.manualLevyAmount * paymentYears 
+                };
             }
+            
+            // Otherwise, calculate automatically
             const levyRate = 0.001;
             const maxLevyHKD = 100;
             let yearlyLevy = targetPremium * levyRate;
+            
             let yearlyLevyInHKD;
             if (state.currency === 'HKD') {
                 yearlyLevyInHKD = yearlyLevy;
@@ -917,6 +900,7 @@
                 const usdRate = usdRates[state.currency] || 1;
                 yearlyLevyInHKD = (yearlyLevy / usdRate) * state.exchangeRates['USD/HKD'];
             }
+            
             if (yearlyLevyInHKD > maxLevyHKD) {
                 if (state.currency === 'HKD') {
                     yearlyLevy = maxLevyHKD;
@@ -927,20 +911,26 @@
                     yearlyLevy = (maxLevyHKD / state.exchangeRates['USD/HKD']) * usdRate;
                 }
             }
+            
             const paymentYears = state.paymentOption === '2-pay' ? 2 : 5;
             return { yearly: yearlyLevy, total: yearlyLevy * paymentYears };
         }
 
         function calculatePrepaymentOption() {
             const premium = state.annualPremium;
+            
             if (!premium || state.currency !== 'USD') {
-                return { premiumDepositFund: 0, totalPrepayment: 0, basicRebate: calculateBasicRebate(),
-                    greenOfferBenefit: 0, adjustedFinalAmount: 0 };
+                return { 
+                    premiumDepositFund: 0, totalPrepayment: 0, basicRebate: calculateBasicRebate(),
+                    greenOfferBenefit: 0, adjustedFinalAmount: 0 
+                };
             }
+            
             const basicRebateAmount = calculateBasicRebate();
             const levy = calculateLevy();
             let premiumDepositFund = 0;
             let greenOfferBenefit = 0;
+            
             if (state.paymentOption === '2-pay') {
                 const interestRate = 0.055;
                 const pvYear2 = premium / (1 + interestRate);
@@ -958,29 +948,39 @@
                 const standardTotalPayment = premium * 5;
                 greenOfferBenefit = standardTotalPayment - premiumDepositFund;
             }
+            
             const totalPrepayment = premiumDepositFund + levy.total;
             const adjustedFinalAmount = totalPrepayment - basicRebateAmount;
-            return { premiumDepositFund, totalPrepayment, basicRebate: basicRebateAmount,
-                greenOfferBenefit, adjustedFinalAmount };
+            
+            return { 
+                premiumDepositFund, totalPrepayment, basicRebate: basicRebateAmount,
+                greenOfferBenefit, adjustedFinalAmount
+            };
         }
 
         function calculateStandardPaymentOption() {
             const premium = state.annualPremium;
             if (!premium) return { totalCost: 0, yearByYear: [] };
+            
             const paymentYears = state.paymentOption === '2-pay' ? 2 : 5;
             const levy = calculateLevy();
             const yearlyLevy = levy.yearly;
             const basicRebateAmount = calculateBasicRebate();
+            
             let totalCost = 0;
             const yearByYear = [];
+            
             for (let year = 1; year <= paymentYears; year++) {
                 let yearlyPremium = premium;
                 if (year === 2) yearlyPremium = premium - basicRebateAmount;
                 const yearTotal = yearlyPremium + yearlyLevy;
                 totalCost += yearTotal;
-                yearByYear.push({ year, premium: yearlyPremium, rebate: year === 2 ? basicRebateAmount : 0,
-                    levy: yearlyLevy, total: yearTotal });
+                yearByYear.push({
+                    year, premium: yearlyPremium, rebate: year === 2 ? basicRebateAmount : 0,
+                    levy: yearlyLevy, total: yearTotal
+                });
             }
+            
             return { totalCost, yearByYear };
         }
 
@@ -995,6 +995,7 @@
             return today >= startDate && today <= endDate;
         }
 
+        // UI functions
         function setPaymentOption(option, element) {
             state.paymentOption = option;
             document.querySelectorAll('.radio-button').forEach(btn => btn.classList.remove('active'));
@@ -1013,6 +1014,7 @@
             state.showAdvanced = !state.showAdvanced;
             const section = document.getElementById('advancedSection');
             const icon = document.getElementById('toggleIcon');
+            
             if (state.showAdvanced) {
                 section.classList.remove('hidden');
                 icon.textContent = '▲';
@@ -1027,7 +1029,9 @@
         function toggleManualLevy() {
             const checkbox = document.getElementById('useManualLevy');
             const input = document.getElementById('manualLevyAmount');
+            
             state.useManualLevy = checkbox.checked;
+            
             if (state.useManualLevy) {
                 input.disabled = false;
                 input.style.background = 'white';
@@ -1044,86 +1048,154 @@
             document.getElementById('usdThb').value = '32.32';
             document.getElementById('usdHkd').value = '7.77';
             document.getElementById('hkdThb').value = '4.16';
-            state.exchangeRates = { 'USD/THB': 32.32, 'USD/HKD': 7.77, 'HKD/THB': 4.16 };
+            state.exchangeRates = {
+                'USD/THB': 32.32,
+                'USD/HKD': 7.77,
+                'HKD/THB': 4.16
+            };
         }
 
         function calculateResults() {
+            // Get current values
             state.annualPremium = parseFloat(document.getElementById('annualPremium').value) || 0;
             state.exchangeRates['USD/THB'] = parseFloat(document.getElementById('usdThb').value) || 32.32;
             state.exchangeRates['USD/HKD'] = parseFloat(document.getElementById('usdHkd').value) || 7.77;
             state.exchangeRates['HKD/THB'] = parseFloat(document.getElementById('hkdThb').value) || 4.16;
+            
+            // Get manual levy amount if checkbox is checked
             if (state.useManualLevy) {
                 state.manualLevyAmount = parseFloat(document.getElementById('manualLevyAmount').value) || 0;
             }
+            
+            // Update minimum text
             document.getElementById('minimumText').textContent = `Min: ${formatCurrency(getMinimumPremium())}`;
+            
+            // Render results
             renderResults();
         }
 
         function updateCalculations() {
+            // Update minimum text only (no auto-calculate)
             document.getElementById('minimumText').textContent = `Min: ${formatCurrency(getMinimumPremium())}`;
         }
 
         function renderResults() {
             const resultsSection = document.getElementById('resultsSection');
             const premium = state.annualPremium;
+            
             if (!premium) {
-                resultsSection.innerHTML = `<div class="no-results"><div class="no-results-text">Enter annual premium to see calculation results</div></div>`;
+                resultsSection.innerHTML = `
+                    <div class="no-results">
+                        <div class="no-results-text">Enter annual premium to see calculation results</div>
+                    </div>
+                `;
                 return;
             }
+            
             if (isPremiumBelowMinimum()) {
-                resultsSection.innerHTML = `<div class="error-card"><div class="error-text">Premium below minimum: ${formatCurrency(getMinimumPremium())}</div></div>`;
+                resultsSection.innerHTML = `
+                    <div class="error-card">
+                        <div class="error-text">
+                            Premium below minimum: ${formatCurrency(getMinimumPremium())}
+                        </div>
+                    </div>
+                `;
                 return;
             }
+            
             const standardPayment = calculateStandardPaymentOption();
             const prepaymentOption = calculatePrepaymentOption();
             const basicRebate = calculateBasicRebate();
             const levy = calculateLevy();
             const totalPremiumPaidWithLevy = (premium * (state.paymentOption === '2-pay' ? 2 : 5)) + levy.total;
+            
             resultsSection.innerHTML = `
                 <div class="results-grid">
                     <div class="result-card standard">
                         <div class="card-title">Standard Payment</div>
                         <div class="card-amount">${formatCurrency(standardPayment.totalCost)}</div>
                         <div class="card-subtitle">Pay annually + Basic Rebate</div>
+                        
                         <div class="details-container">
-                            <div class="detail-row"><span>Total Discount:</span><span class="discount-amount">${formatCurrency(basicRebate)}</span></div>
-                            <div class="detail-row"><span>Discount %:</span><span class="discount-amount">${((basicRebate / totalPremiumPaidWithLevy) * 100).toFixed(1)}%</span></div>
-                            <div class="detail-row final"><span class="final-label">Final Total:</span><span class="final-amount standard">${formatCurrency(standardPayment.totalCost)}</span></div>
+                            <div class="detail-row">
+                                <span>Total Discount:</span>
+                                <span class="discount-amount">${formatCurrency(basicRebate)}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span>Discount %:</span>
+                                <span class="discount-amount">${((basicRebate / totalPremiumPaidWithLevy) * 100).toFixed(2)}%</span>
+                            </div>
+                            <div class="detail-row final">
+                                <span class="final-label">Final Total:</span>
+                                <span class="final-amount standard">${formatCurrency(standardPayment.totalCost)}</span>
+                            </div>
                         </div>
                     </div>
+
                     <div class="result-card ${state.currency === 'USD' ? 'prepayment' : 'unavailable'}">
                         <div class="card-title">Prepayment Option</div>
                         ${state.currency === 'USD' ? `
                             <div class="card-amount">${formatCurrency(prepaymentOption.adjustedFinalAmount)}</div>
                             <div class="card-subtitle">Pay all premiums upfront</div>
+                            
                             <div class="details-container">
-                                <div class="detail-row"><span>Total Discount:</span><span class="discount-amount">${formatCurrency(prepaymentOption.greenOfferBenefit + prepaymentOption.basicRebate)}</span></div>
-                                <div class="detail-row"><span>Discount %:</span><span class="discount-amount">${(((prepaymentOption.greenOfferBenefit + prepaymentOption.basicRebate) / totalPremiumPaidWithLevy) * 100).toFixed(1)}%</span></div>
-                                <div class="detail-row final"><span class="final-label">Final Amount:</span><span class="final-amount prepayment">${formatCurrency(prepaymentOption.adjustedFinalAmount)}</span></div>
+                                <div class="detail-row">
+                                    <span>Total Discount:</span>
+                                    <span class="discount-amount">
+                                        ${formatCurrency(prepaymentOption.greenOfferBenefit + prepaymentOption.basicRebate)}
+                                    </span>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Discount %:</span>
+                                    <span class="discount-amount">
+                                        ${(((prepaymentOption.greenOfferBenefit + prepaymentOption.basicRebate) / totalPremiumPaidWithLevy) * 100).toFixed(2)}%
+                                    </span>
+                                </div>
+                                <div class="detail-row final">
+                                    <span class="final-label">Final Amount:</span>
+                                    <span class="final-amount prepayment">${formatCurrency(prepaymentOption.adjustedFinalAmount)}</span>
+                                </div>
                             </div>
                         ` : `
                             <div class="unavailable-text">Not Available</div>
                             <div class="card-subtitle">USD policies only</div>
+                            
                             <div class="details-container">
-                                <div class="detail-row"><span>Total Discount:</span><span class="discount-amount">${formatCurrency(basicRebate)}</span></div>
-                                <div class="detail-row"><span>Discount %:</span><span class="discount-amount">${((basicRebate / totalPremiumPaidWithLevy) * 100).toFixed(1)}%</span></div>
+                                <div class="detail-row">
+                                    <span>Total Discount:</span>
+                                    <span class="discount-amount">${formatCurrency(basicRebate)}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span>Discount %:</span>
+                                    <span class="discount-amount">${((basicRebate / totalPremiumPaidWithLevy) * 100).toFixed(2)}%</span>
+                                </div>
                             </div>
                         `}
                     </div>
+
                     ${state.currency === 'USD' ? `
                         <div class="result-card goal-seek-card">
                             <div class="card-title">Goal Seek Calculator</div>
                             <div class="card-subtitle">Find required annual premium for target final amount</div>
+                            
                             <div class="goal-seek-container">
-                                <input type="number" id="goalSeekTarget" class="text-input" placeholder="Target final amount" inputmode="numeric">
-                                <button class="goal-seek-button" onclick="calculateGoalSeek()">Calculate Required Premium</button>
+                                <input type="number" id="goalSeekTarget" class="text-input" 
+                                       placeholder="Target final amount" inputmode="numeric">
+                                <button class="goal-seek-button" onclick="calculateGoalSeek()">
+                                    Calculate Required Premium
+                                </button>
                                 <div id="goalSeekResult"></div>
                             </div>
                         </div>
                     ` : ''}
+
                     <div class="action-buttons">
-                        <button class="action-button share" onclick="shareResults()">📤 Share Results</button>
-                        <button class="action-button analysis" onclick="showFullAnalysis()">📊 Full Analysis</button>
+                        <button class="action-button share" onclick="shareResults()">
+                            📤 Share Results
+                        </button>
+                        <button class="action-button analysis" onclick="showFullAnalysis()">
+                            📊 Full Analysis
+                        </button>
                     </div>
                 </div>
             `;
@@ -1135,33 +1207,44 @@
                 alert('Goal Seek is only available for USD currency and requires a target amount.');
                 return;
             }
+
             let low = 1000, high = 1000000, bestPremium = 0, bestDifference = Infinity;
             const tolerance = 0.01, maxIterations = 100;
+
+            // Store original premium
             const originalPremium = state.annualPremium;
+
             for (let iteration = 0; iteration < maxIterations; iteration++) {
                 const testPremium = (low + high) / 2;
-                state.annualPremium = testPremium;
+                state.annualPremium = testPremium; // Temporarily set for calculation
                 const testResult = calculatePrepaymentOption();
                 const difference = testResult.adjustedFinalAmount - goalSeekTarget;
+
                 if (Math.abs(difference) < Math.abs(bestDifference)) {
                     bestDifference = difference;
                     bestPremium = testPremium;
                 }
+
                 if (Math.abs(difference) < tolerance) break;
                 if (difference > 0) high = testPremium;
                 else low = testPremium;
             }
+
+            // Restore original premium
             state.annualPremium = originalPremium;
+
+            // Calculate final result with best premium
             state.annualPremium = bestPremium;
             const finalResult = calculatePrepaymentOption();
-            state.annualPremium = originalPremium;
+            state.annualPremium = originalPremium; // Restore again
+
             const resultDiv = document.getElementById('goalSeekResult');
             resultDiv.innerHTML = `
                 <div class="goal-seek-result">
                     <div class="result-amount">${formatCurrency(bestPremium)}</div>
                     <div class="result-label">Required Annual Premium</div>
                     <div class="result-details">
-                        <div>Basic Rebate Rate: ${getBasicRebateRate(bestPremium)}%</div>
+                        <div>Basic Rebate Rate: ${getBasicRebateRate(bestPremium).toFixed(2)}%</div>
                         <div>Final Payment: ${formatCurrency(finalResult.adjustedFinalAmount)}</div>
                     </div>
                 </div>
@@ -1171,8 +1254,10 @@
         function shareResults() {
             const premium = state.annualPremium;
             if (!premium) return;
+
             const standardPayment = calculateStandardPaymentOption();
             const prepaymentOption = calculatePrepaymentOption();
+            
             const message = `SunJoy Global Calculator Results
 Payment: ${state.paymentOption} | Currency: ${state.currency}
 Annual Premium: ${formatCurrency(premium)}
@@ -1181,12 +1266,17 @@ Standard Payment: ${formatCurrency(standardPayment.totalCost)}
 ${state.currency === 'USD' ? `Prepayment: ${formatCurrency(prepaymentOption.adjustedFinalAmount)}` : 'Prepayment: Not available'}
 
 Generated by SunJoy Calculator Mobile`;
+
             if (navigator.share) {
-                navigator.share({ title: 'SunJoy Calculator Results', text: message }).catch(console.log);
+                navigator.share({ 
+                    title: 'SunJoy Calculator Results',
+                    text: message 
+                }).catch(console.log);
             } else if (navigator.clipboard) {
                 navigator.clipboard.writeText(message).then(() => {
                     alert('Results copied to clipboard! 📋');
                 }).catch(() => {
+                    // Fallback for older browsers
                     const textArea = document.createElement('textarea');
                     textArea.value = message;
                     document.body.appendChild(textArea);
@@ -1201,11 +1291,13 @@ Generated by SunJoy Calculator Mobile`;
         function showFullAnalysis() {
             const premium = state.annualPremium;
             if (!premium) return;
+
             const standardPayment = calculateStandardPaymentOption();
             const prepaymentOption = calculatePrepaymentOption();
             const basicRebate = calculateBasicRebate();
             const rebateRate = getBasicRebateRate();
             const levy = calculateLevy();
+
             document.getElementById('modalBody').innerHTML = `
                 <div class="analysis-card">
                     <div class="analysis-title">Policy Summary</div>
@@ -1213,42 +1305,85 @@ Generated by SunJoy Calculator Mobile`;
                         <div style="margin-bottom: 4px;">Payment: ${state.paymentOption}</div>
                         <div style="margin-bottom: 4px;">Currency: ${state.currency}</div>
                         <div style="margin-bottom: 4px;">Premium: ${formatCurrency(premium)}</div>
-                        <div>Rebate Rate: ${rebateRate}%</div>
+                        <div>Rebate Rate: ${rebateRate.toFixed(2)}%</div>
                     </div>
                 </div>
+
                 <div class="analysis-card">
                     <div class="analysis-title">Payment Details</div>
-                    <div style="font-size: 12px; font-weight: 600; color: #1d4ed8; margin: 12px 0 8px 0;">Standard Payment</div>
+                    
+                    <div style="font-size: 12px; font-weight: 600; color: #1d4ed8; margin: 12px 0 8px 0;">
+                        Standard Payment
+                    </div>
                     ${standardPayment.yearByYear.map(yearData => `
                         <div style="background: white; padding: 8px; border-radius: 6px; margin: 4px 0; font-size: 11px;">
                             <div style="font-weight: 600; color: #374151;">Year ${yearData.year}:</div>
                             <div style="color: #6b7280;">Premium: ${formatCurrency(yearData.premium)}</div>
                             ${yearData.rebate > 0 ? `<div style="color: #16a34a;">Rebate: -${formatCurrency(yearData.rebate)}</div>` : ''}
                             <div style="color: #6b7280;">Levy: ${formatCurrency(yearData.levy)}</div>
-                            <div style="font-weight: 600; color: #374151; border-top: 1px solid #e5e7eb; padding-top: 4px; margin-top: 4px;">Total: ${formatCurrency(yearData.total)}</div>
+                            <div style="font-weight: 600; color: #374151; border-top: 1px solid #e5e7eb; padding-top: 4px; margin-top: 4px;">
+                                Total: ${formatCurrency(yearData.total)}
+                            </div>
                         </div>
                     `).join('')}
-                    <div style="font-size: 12px; font-weight: bold; color: #1d4ed8; text-align: center; margin-top: 8px;">Total Cost: ${formatCurrency(standardPayment.totalCost)}</div>
+                    <div style="font-size: 12px; font-weight: bold; color: #1d4ed8; text-align: center; margin-top: 8px;">
+                        Total Cost: ${formatCurrency(standardPayment.totalCost)}
+                    </div>
+
                     ${state.currency === 'USD' ? `
-                        <div style="font-size: 12px; font-weight: 600; color: #1d4ed8; margin: 12px 0 8px 0;">Prepayment Option</div>
-                        <div style="font-size: 11px; color: #374151; margin-bottom: 4px;">Premium Deposit: ${formatCurrency(prepaymentOption.premiumDepositFund)}</div>
-                        <div style="font-size: 11px; color: #374151; margin-bottom: 4px;">Total Levy: ${formatCurrency(levy.total)}</div>
-                        <div style="font-size: 11px; color: #16a34a; margin-bottom: 4px;">Green Benefit: -${formatCurrency(prepaymentOption.greenOfferBenefit)}</div>
-                        <div style="font-size: 11px; color: #16a34a; margin-bottom: 4px;">Basic Rebate: -${formatCurrency(prepaymentOption.basicRebate)}</div>
-                        <div style="font-size: 12px; font-weight: bold; color: #1d4ed8; text-align: center; margin-top: 8px;">Final Amount: ${formatCurrency(prepaymentOption.adjustedFinalAmount)}</div>
+                        <div style="font-size: 12px; font-weight: 600; color: #1d4ed8; margin: 12px 0 8px 0;">
+                            Prepayment Option
+                        </div>
+                        <div style="font-size: 11px; color: #374151; margin-bottom: 4px;">
+                            Premium Deposit: ${formatCurrency(prepaymentOption.premiumDepositFund)}
+                        </div>
+                        <div style="font-size: 11px; color: #374151; margin-bottom: 4px;">
+                            Total Levy: ${formatCurrency(levy.total)}
+                        </div>
+                        <div style="font-size: 11px; color: #16a34a; margin-bottom: 4px;">
+                            Green Benefit: -${formatCurrency(prepaymentOption.greenOfferBenefit)}
+                        </div>
+                        <div style="font-size: 11px; color: #16a34a; margin-bottom: 4px;">
+                            Basic Rebate: -${formatCurrency(prepaymentOption.basicRebate)}
+                        </div>
+                        <div style="font-size: 12px; font-weight: bold; color: #1d4ed8; text-align: center; margin-top: 8px;">
+                            Final Amount: ${formatCurrency(prepaymentOption.adjustedFinalAmount)}
+                        </div>
                     ` : ''}
                 </div>
+
                 ${state.currency === 'USD' ? `
                     <div class="analysis-card" style="background: #fefce8; border-color: #fef08a;">
                         <div class="analysis-title">Cost Comparison</div>
-                        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;"><span>Standard:</span><span>${formatCurrency(standardPayment.totalCost)}</span></div>
-                        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;"><span>Prepayment:</span><span>${formatCurrency(prepaymentOption.adjustedFinalAmount)}</span></div>
-                        <div style="display: flex; justify-content: space-between; font-size: 12px; border-top: 1px solid #fef08a; padding-top: 8px; margin-top: 8px; font-weight: bold;"><span>Total Savings:</span><span style="color: #16a34a;">${formatCurrency(standardPayment.totalCost - prepaymentOption.adjustedFinalAmount)}</span></div>
-                        <div style="font-size: 10px; color: #6b7280; text-align: center; margin-top: 4px;">(${(((standardPayment.totalCost - prepaymentOption.adjustedFinalAmount) / standardPayment.totalCost) * 100).toFixed(1)}% savings)</div>
-                        <div style="padding: 12px; border-radius: 6px; margin-top: 16px; text-align: center; font-size: 12px; font-weight: bold; background: ${prepaymentOption.adjustedFinalAmount < standardPayment.totalCost ? '#f0fdf4' : '#dbeafe'}; border: 1px solid ${prepaymentOption.adjustedFinalAmount < standardPayment.totalCost ? '#86efac' : '#93c5fd'}; color: ${prepaymentOption.adjustedFinalAmount < standardPayment.totalCost ? '#15803d' : '#1d4ed8'};">${prepaymentOption.adjustedFinalAmount < standardPayment.totalCost ? '✅ RECOMMENDED: Prepayment' : '💭 CONSIDER: Standard Payment'}</div>
+                        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                            <span>Standard:</span>
+                            <span>${formatCurrency(standardPayment.totalCost)}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;">
+                            <span>Prepayment:</span>
+                            <span>${formatCurrency(prepaymentOption.adjustedFinalAmount)}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 12px; border-top: 1px solid #fef08a; padding-top: 8px; margin-top: 8px; font-weight: bold;">
+                            <span>Total Savings:</span>
+                            <span style="color: #16a34a;">
+                                ${formatCurrency(standardPayment.totalCost - prepaymentOption.adjustedFinalAmount)}
+                            </span>
+                        </div>
+                        <div style="font-size: 10px; color: #6b7280; text-align: center; margin-top: 4px;">
+                            (${(((standardPayment.totalCost - prepaymentOption.adjustedFinalAmount) / standardPayment.totalCost) * 100).toFixed(2)}% savings)
+                        </div>
+                        
+                        <div style="padding: 12px; border-radius: 6px; margin-top: 16px; text-align: center; font-size: 12px; font-weight: bold; 
+                                    background: ${prepaymentOption.adjustedFinalAmount < standardPayment.totalCost ? '#f0fdf4' : '#dbeafe'}; 
+                                    border: 1px solid ${prepaymentOption.adjustedFinalAmount < standardPayment.totalCost ? '#86efac' : '#93c5fd'}; 
+                                    color: ${prepaymentOption.adjustedFinalAmount < standardPayment.totalCost ? '#15803d' : '#1d4ed8'};">
+                            ${prepaymentOption.adjustedFinalAmount < standardPayment.totalCost ? 
+                              '✅ RECOMMENDED: Prepayment' : '💭 CONSIDER: Standard Payment'}
+                        </div>
                     </div>
                 ` : ''}
             `;
+
             document.getElementById('modalOverlay').style.display = 'flex';
         }
 
@@ -1256,21 +1391,12 @@ Generated by SunJoy Calculator Mobile`;
             document.getElementById('modalOverlay').style.display = 'none';
         }
 
-        function promptInstall() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        document.getElementById('installBanner').classList.remove('show');
-                    }
-                    deferredPrompt = null;
-                });
-            }
-        }
-
+        // Initialize app
         function initializeApp() {
+            // Set promotion status
             const promotionBanner = document.getElementById('promotionBanner');
             const promotionStatus = document.getElementById('promotionStatus');
+            
             if (isPromotionActive()) {
                 promotionBanner.classList.add('active');
                 promotionBanner.classList.remove('inactive');
@@ -1280,38 +1406,24 @@ Generated by SunJoy Calculator Mobile`;
                 promotionBanner.classList.remove('active');
                 promotionStatus.textContent = '❌ Not Active';
             }
+
+            // Initial calculation
             updateCalculations();
         }
 
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            document.getElementById('installBanner').classList.add('show');
-        });
-
-        window.addEventListener('appinstalled', () => {
-            document.getElementById('installBanner').classList.remove('show');
-            deferredPrompt = null;
-        });
-
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').then(() => {
-                console.log('Service Worker registered');
-            }).catch((error) => {
-                console.log('Service Worker registration failed:', error);
-            });
-        }
-
+        // Initialize when DOM is ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initializeApp);
         } else {
             initializeApp();
         }
 
+        // Prevent zoom on iOS when focusing inputs
         if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
             document.addEventListener('touchstart', function() {}, {passive: true});
         }
 
+        // Close modal when pressing escape key
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
                 closeModal();
