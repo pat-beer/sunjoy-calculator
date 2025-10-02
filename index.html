@@ -501,8 +501,8 @@
             const currency = curr || state.currency;
             return new Intl.NumberFormat('en-US', {
                 style: 'currency', currency: currency === 'RMB' ? 'CNY' : currency,
-                minimumFractionDigits: 0, maximumFractionDigits: 0
-            }).format(Math.round(amount));
+                minimumFractionDigits: 2, maximumFractionDigits: 2
+            }).format(amount);
         }
         function getMinimumPremium() { return minimumPremiums[state.paymentOption][state.currency] || 0; }
         function getBasicRebateRate(premium = null) {
