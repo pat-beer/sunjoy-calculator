@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="description" content="SunJoy Global Insurance Calculator - Mobile Optimized PWA">
+    <meta name="theme-color" content="#2563eb">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="SunJoy Calc">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="manifest" href="manifest.json">
+    
+    <title>SunJoy Calculator Mobile</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans Thai', sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #1f2937;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: white;
+            padding: 20px 16px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .header-subtitle {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .promotion-banner {
+            margin: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .promotion-banner.active {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #15803d;
+        }
+
+        .promotion-banner.inactive {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+        }
+
+        .content {
+            padding: 16px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid #e5e7eb;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .radio-button {
+            flex: 1;
+            padding: 14px 16px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .radio-button.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+            transform: scale(1.02);
+        }
+
+        .radio-button:active {
+            transform: scale(0.98);
+        }
+
+        .currency-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .currency-button {
+            padding: 14px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            background: white;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .currency-button.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+            transform: scale(1.05);
+        }
+
+        .currency-button:active {
+            transform: scale(0.95);
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .minimum-text {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 6px;
+        }
+
+        .advanced-toggle {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border: none;
+            background: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            cursor: pointer;
+            border-bottom: 1px solid #e5e7eb;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .advanced-toggle:active {
+            background: #f3f4f6;
+        }
+
+        .toggle-icon {
+            font-size: 12px;
+            color: #6b7280;
+            transition: transform 0.2s;
+        }
+
+        .advanced-section {
+            padding-top: 16px;
+            animation: slideDown 0.3s ease;
+        }
+
+        .advanced-section.hidden {
+            display: none;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .exchange-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .exchange-input label {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .exchange-input input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 13px;
+            background: white;
+        }
+
+        .exchange-input input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        .reset-button {
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .reset-button:active {
+            transform: scale(0.95);
+            background: #4b5563;
+        }
+
+        .no-results {
+            padding: 40px 16px;
+            text-align: center;
+        }
+
+        .no-results-text {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .error-card {
+            background: #fef2f2;
+            border: 2px solid #fecaca;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .error-text {
+            color: #b91c1c;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .results-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .result-card {
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.2s;
+        }
+
+        .result-card.standard {
+            background: #eff6ff;
+            border: 2px solid #bfdbfe;
+        }
+
+        .result-card.prepayment {
+            background: #f0fdf4;
+            border: 2px solid #bbf7d0;
+        }
+
+        .result-card.unavailable {
+            background: #f9fafb;
+            border: 2px solid #d1d5db;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 12px;
+            color: #1f2937;
+        }
+
+        .card-amount {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 6px;
+            color: #2563eb;
+        }
+
+        .prepayment .card-amount {
+            color: #16a34a;
+        }
+
+        .card-subtitle {
+            font-size: 12px;
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+
+        .unavailable-text {
+            font-size: 18px;
+            text-align: center;
+            color: #9ca3af;
+            margin-bottom: 6px;
+        }
+
+        .details-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            padding: 4px 0;
+        }
+
+        .detail-row span:first-child {
+            color: #374151;
+        }
+
+        .discount-amount {
+            font-weight: bold;
+            color: #16a34a;
+        }
+
+        .detail-row.final {
+            border-top: 1px solid #e5e7eb;
+            padding-top: 8px;
+            margin-top: 8px;
+        }
+
+        .final-label {
+            font-weight: bold;
+            color: #374151;
+        }
+
+        .final-amount.standard {
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .final-amount.prepayment {
+            font-weight: bold;
+            color: #16a34a;
+        }
+
+        .goal-seek-card {
+            background: #faf5ff;
+            border: 2px solid #e9d5ff;
+        }
+
+        .goal-seek-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .goal-seek-button {
+            background: #9333ea;
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .goal-seek-button:active {
+            transform: scale(0.98);
+            background: #7c3aed;
+        }
+
+        .goal-seek-result {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-amount {
+            font-size: 20px;
+            font-weight: bold;
+            color: #9333ea;
+            margin-bottom: 6px;
+        }
+
+        .result-label {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 12px;
+        }
+
+        .result-details {
+            font-size: 10px;
+            color: #374151;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .action-button {
+            padding: 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .action-button:active {
+            transform: scale(0.95);
+        }
+
+        .action-button.share {
+            background: #16a34a;
+            color: white;
+        }
+
+        .action-button.share:active {
+            background: #15803d;
+        }
+
+        .action-button.analysis {
+            background: #ca8a04;
+            color: white;
+        }
+
+        .action-button.analysis:active {
+            background: #a16207;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .calculate-btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .calculate-btn:hover {
+            background: linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 90vw;
+            max-height: 80vh;
+            overflow: hidden;
+            box-shadow: 0 20px 25px rgba(0,0,0,0.25);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: #2563eb;
+            color: white;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .modal-close {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .modal-close:active {
+            transform: scale(0.9);
+            background: rgba(255,255,255,0.3);
+        }
+
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(80vh - 80px);
+        }
+
+        .analysis-card {
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .analysis-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .footer {
+            padding: 20px 16px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 11px;
+            line-height: 1.4;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 20px;
+        }
+
+        button, .radio-button, .currency-button {
+            min-height: 44px;
+            min-width: 44px;
+        }
+
+        .text-input {
+            min-height: 48px;
+        }
+
+        @supports (-webkit-touch-callout: none) {
+            .text-input {
+                font-size: 16px;
+            }
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .app-container {
+                background: #1f2937;
+                color: #f9fafb;
+            }
+            
+            .card {
+                background: #374151;
+                border-color: #4b5563;
+            }
+        }
+
+        .update-notice {
+            background: #dbeafe;
+            border: 1px solid #93c5fd;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 16px;
+            font-size: 12px;
+            color: #1e40af;
+            text-align: center;
+        }
+
+        .install-banner {
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+            color: white;
+            padding: 12px 16px;
+            text-align: center;
+            font-size: 12px;
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 101;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .install-banner.show {
+            display: block;
+        }
+
+        .install-banner button {
+            background: white;
+            color: #16a34a;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="install-banner" id="installBanner">
+        <div>📱 ติดตั้งแอปบนหน้าจอหลักเพื่อเข้าถึงง่ายขึ้น</div>
+        <button onclick="promptInstall()">ติดตั้งเลย</button>
+    </div>
+
+    <div class="app-container">
+        <div class="header">
+            <div class="header-title">SunJoy Calculator Mobile</div>
+            <div class="header-subtitle">Premium Calculator with Rebate & Levy</div>
+        </div>
+
+        <div class="update-notice">
+            📊 อัตราแลกเปลี่ยนล่าสุด: USD/THB 32.32, USD/HKD 7.77, HKD/THB 4.16 (1 ต.ค. 2025 19:30)
+        </div>
+
+        <div id="promotionBanner" class="promotion-banner">
+            <div id="promotionText">
+                📅 Promotion Period: October 1 - October 31, 2025 | 
+                <span id="promotionStatus"></span>
+            </div>
+            <div style="margin-top: 5px; font-size: 11px; opacity: 0.8;">
+                Policy Issue Date: on or before November 30, 2025
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="card">
+                <div class="input-group">
+                    <label class="input-label">Payment Option</label>
+                    <div class="radio-group">
+                        <button class="radio-button active" onclick="setPaymentOption('2-pay', this)">2-Pay</button>
+                        <button class="radio-button" onclick="setPaymentOption('5-pay', this)">5-Pay</button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Currency</label>
+                    <div class="currency-grid">
+                        <button class="currency-button active" onclick="setCurrency('USD', this)">USD</button>
+                        <button class="currency-button" onclick="setCurrency('CAD', this)">CAD</button>
+                        <button class="currency-button" onclick="setCurrency('GBP', this)">GBP</button>
+                        <button class="currency-button" onclick="setCurrency('RMB', this)">RMB</button>
+                        <button class="currency-button" onclick="setCurrency('AUD', this)">AUD</button>
+                        <button class="currency-button" onclick="setCurrency('HKD', this)">HKD</button>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Annual Premium</label>
+                    <input type="number" id="annualPremium" class="text-input" placeholder="Enter amount" 
+                           inputmode="numeric" onkeypress="if(event.key==='Enter') calculateResults()">
+                    <div class="minimum-text" id="minimumText">Min: $15,000</div>
+                </div>
+
+                <button class="calculate-btn" onclick="calculateResults()">
+                    Calculate Premium
+                </button>
+
+                <div class="input-group">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 8px;">
+                        <input type="checkbox" id="useManualLevy" style="width: 18px; height: 18px; cursor: pointer;" onchange="toggleManualLevy()">
+                        <span class="input-label" style="margin: 0; font-size: 14px;">Use Manual Levy Amount</span>
+                    </label>
+                    <div style="font-size: 12px; color: #6b7280; margin-bottom: 8px;">
+                        Determine the amount of Levy in USD
+                    </div>
+                    <div style="position: relative;">
+                        <span style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-size: 16px; color: #6b7280; font-weight: 600;">$</span>
+                        <input type="number" id="manualLevyAmount" class="text-input" placeholder="12.77" 
+                               step="0.01" min="0" disabled
+                               style="padding-left: 35px; background: #f3f4f6;"
+                               inputmode="decimal">
+                    </div>
+                    <div style="background: #fef3c7; border: 1px solid #fde68a; border-radius: 8px; padding: 12px; margin-top: 12px; font-size: 12px; color: #92400e; line-height: 1.4;">
+                        <strong>⚠️ Note:</strong> Check the box above to manually set the levy amount. This will override the automatic levy calculation (0.1% per year, capped at HKD $100).
+                    </div>
+                </div>
+
+                <button class="advanced-toggle" onclick="toggleAdvanced()">
+                    <span>Exchange Rates (Updated Sep 2025)</span>
+                    <span class="toggle-icon" id="toggleIcon">▼</span>
+                </button>
+
+                <div class="advanced-section hidden" id="advancedSection">
+                    <div class="exchange-grid">
+                        <div class="exchange-input">
+                            <label>USD/THB</label>
+                            <input type="number" step="0.01" id="usdThb" value="32.32">
+                        </div>
+                        <div class="exchange-input">
+                            <label>USD/HKD</label>
+                            <input type="number" step="0.01" id="usdHkd" value="7.77">
+                        </div>
+                        <div class="exchange-input">
+                            <label>HKD/THB</label>
+                            <input type="number" step="0.01" id="hkdThb" value="4.16">
+                        </div>
+                    </div>
+                    <button class="reset-button" onclick="resetExchangeRates()">
+                        🔄 Reset to Current Rates
+                    </button>
+                </div>
+            </div>
+
+            <div id="resultsSection"></div>
+        </div>
+
+        <div class="footer">
+            This calculator is for estimation purposes only. Please consult with your financial advisor for official quotes.
+            <br><br>
+            <strong>PWA Version</strong> | Add to Home Screen for app-like experience
+        </div>
+
+        <div id="modalOverlay" class="modal-overlay" style="display: none;" onclick="closeModal()">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <div class="modal-header">
+                    <div class="modal-title">Full Analysis & Breakdown</div>
+                    <button class="modal-close" onclick="closeModal()">✕</button>
+                </div>
+                <div class="modal-body" id="modalBody"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let deferredPrompt;
+        let state = {
+            paymentOption: '2-pay',
+            currency: 'USD',
+            annualPremium: 0,
+            exchangeRates: {
+                'USD/THB': 32.32,
+                'USD/HKD': 7.77,
+                'HKD/THB': 4.16
+            },
+            showAdvanced: false,
+            useManualLevy: false,
+            manualLevyAmount: 0
+        };
+
+        const basicRebateTable = {
+            '2-pay': {
+                'USD': [{ min: 100000, rate: 4.8 }, { min: 20000, rate: 2 }],
+                'CAD': [{ min: 120000, rate: 4.8 }, { min: 24000, rate: 2 }],
+                'GBP': [{ min: 70000, rate: 4.8 }, { min: 14000, rate: 2 }],
+                'RMB': [{ min: 700000, rate: 4.8 }, { min: 140000, rate: 2 }],
+                'AUD': [{ min: 150000, rate: 4.8 }, { min: 30000, rate: 2 }],
+                'HKD': [{ min: 800000, rate: 4.8 }, { min: 160000, rate: 2 }]
+            },
+            '5-pay': {
+                'USD': [{ min: 200000, rate: 28 }, { min: 100000, rate: 26 }, { min: 50000, rate: 24 }, { min: 30000, rate: 18 }, { min: 10000, rate: 12 }],
+                'CAD': [{ min: 240000, rate: 28 }, { min: 120000, rate: 26 }, { min: 60000, rate: 24 }, { min: 36000, rate: 18 }, { min: 12000, rate: 12 }],
+                'GBP': [{ min: 140000, rate: 28 }, { min: 70000, rate: 26 }, { min: 35000, rate: 24 }, { min: 21000, rate: 18 }, { min: 7000, rate: 12 }],
+                'RMB': [{ min: 1400000, rate: 28 }, { min: 700000, rate: 26 }, { min: 350000, rate: 24 }, { min: 210000, rate: 18 }, { min: 70000, rate: 12 }],
+                'AUD': [{ min: 300000, rate: 28 }, { min: 150000, rate: 26 }, { min: 75000, rate: 24 }, { min: 45000, rate: 18 }, { min: 15000, rate: 12 }],
+                'HKD': [{ min: 1600000, rate: 28 }, { min: 800000, rate: 26 }, { min: 400000, rate: 24 }, { min: 240000, rate: 18 }, { min: 80000, rate: 12 }]
+            }
+        };
+
+        const minimumPremiums = {
+            '2-pay': { 'USD': 15000, 'CAD': 18000, 'GBP': 10500, 'RMB': 105000, 'AUD': 22500, 'HKD': 120000 },
+            '5-pay': { 'USD': 3000, 'CAD': 3600, 'GBP': 2100, 'RMB': 21000, 'AUD': 4500, 'HKD': 24000 }
+        };
+
+        const usdRates = { 'CAD': 1.26, 'GBP': 0.72, 'RMB': 7.1, 'AUD': 1.5 };
+
+        function formatCurrency(amount, curr = null) {
+            const currency = curr || state.currency;
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: currency === 'RMB' ? 'CNY' : currency,
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(Math.round(amount));
+        }
+
+        function getMinimumPremium() {
+            return minimumPremiums[state.paymentOption][state.currency] || 0;
+        }
+
+        function getBasicRebateRate(premium = null) {
+            const targetPremium = premium || state.annualPremium;
+            if (!targetPremium) return 0;
+            const rates = basicRebateTable[state.paymentOption][state.currency] || [];
+            for (const rateInfo of rates) {
+                if (targetPremium >= rateInfo.min) return rateInfo.rate;
+            }
+            return 0;
+        }
+
+        function calculateBasicRebate(premium = null) {
+            const targetPremium = premium || state.annualPremium;
+            if (!targetPremium) return 0;
+            const rate = getBasicRebateRate(targetPremium);
+            return (targetPremium * rate) / 100;
+        }
+
+        function calculateLevy(premium = null) {
+            const targetPremium = premium || state.annualPremium;
+            if (!targetPremium) return { yearly: 0, total: 0 };
+            if (state.useManualLevy && state.manualLevyAmount > 0) {
+                const paymentYears = state.paymentOption === '2-pay' ? 2 : 5;
+                return { yearly: state.manualLevyAmount, total: state.manualLevyAmount * paymentYears };
+            }
+            const levyRate = 0.001;
+            const maxLevyHKD = 100;
+            let yearlyLevy = targetPremium * levyRate;
+            let yearlyLevyInHKD;
+            if (state.currency === 'HKD') {
+                yearlyLevyInHKD = yearlyLevy;
+            } else if (state.currency === 'USD') {
+                yearlyLevyInHKD = yearlyLevy * state.exchangeRates['USD/HKD'];
+            } else {
+                const usdRate = usdRates[state.currency] || 1;
+                yearlyLevyInHKD = (yearlyLevy / usdRate) * state.exchangeRates['USD/HKD'];
+            }
+            if (yearlyLevyInHKD > maxLevyHKD) {
+                if (state.currency === 'HKD') {
+                    yearlyLevy = maxLevyHKD;
+                } else if (state.currency === 'USD') {
+                    yearlyLevy = maxLevyHKD / state.exchangeRates['USD/HKD'];
+                } else {
+                    const usdRate = usdRates[state.currency] || 1;
+                    yearlyLevy = (maxLevyHKD / state.exchangeRates['USD/HKD']) * usdRate;
+                }
+            }
+            const paymentYears = state.paymentOption === '2-pay' ? 2 : 5;
+            return { yearly: yearlyLevy, total: yearlyLevy * paymentYears };
+        }
+
+        function calculatePrepaymentOption() {
+            const premium = state.annualPremium;
+            if (!premium || state.currency !== 'USD') {
+                return { premiumDepositFund: 0, totalPrepayment: 0, basicRebate: calculateBasicRebate(),
+                    greenOfferBenefit: 0, adjustedFinalAmount: 0 };
+            }
+            const basicRebateAmount = calculateBasicRebate();
+            const levy = calculateLevy();
+            let premiumDepositFund = 0;
+            let greenOfferBenefit = 0;
+            if (state.paymentOption === '2-pay') {
+                const interestRate = 0.055;
+                const pvYear2 = premium / (1 + interestRate);
+                premiumDepositFund = premium + pvYear2;
+                greenOfferBenefit = premium - pvYear2;
+            } else {
+                const rate1 = 0.055;
+                const rate2Plus = 0.048;
+                const pv1 = premium;
+                const pv2 = premium / (1 + rate1);
+                const pv3 = premium / (1 + rate1) / (1 + rate2Plus);
+                const pv4 = premium / (1 + rate1) / Math.pow(1 + rate2Plus, 2);
+                const pv5 = premium / (1 + rate1) / Math.pow(1 + rate2Plus, 3);
+                premiumDepositFund = pv1 + pv2 + pv3 + pv4 + pv5;
+                const standardTotalPayment = premium * 5;
+                greenOfferBenefit = standardTotalPayment - premiumDepositFund;
+            }
+            const totalPrepayment = premiumDepositFund + levy.total;
+            const adjustedFinalAmount = totalPrepayment - basicRebateAmount;
+            return { premiumDepositFund, totalPrepayment, basicRebate: basicRebateAmount,
+                greenOfferBenefit, adjustedFinalAmount };
+        }
+
+        function calculateStandardPaymentOption() {
+            const premium = state.annualPremium;
+            if (!premium) return { totalCost: 0, yearByYear: [] };
+            const paymentYears = state.paymentOption === '2-pay' ? 2 : 5;
+            const levy = calculateLevy();
+            const yearlyLevy = levy.yearly;
+            const basicRebateAmount = calculateBasicRebate();
+            let totalCost = 0;
+            const yearByYear = [];
+            for (let year = 1; year <= paymentYears; year++) {
+                let yearlyPremium = premium;
+                if (year === 2) yearlyPremium = premium - basicRebateAmount;
+                const yearTotal = yearlyPremium + yearlyLevy;
+                totalCost += yearTotal;
+                yearByYear.push({ year, premium: yearlyPremium, rebate: year === 2 ? basicRebateAmount : 0,
+                    levy: yearlyLevy, total: yearTotal });
+            }
+            return { totalCost, yearByYear };
+        }
+
+        function isPremiumBelowMinimum() {
+            return state.annualPremium > 0 && state.annualPremium < getMinimumPremium();
+        }
+
+        function isPromotionActive() {
+            const today = new Date();
+            const startDate = new Date('2025-10-01');
+            const endDate = new Date('2025-10-31');
+            return today >= startDate && today <= endDate;
+        }
+
+        function setPaymentOption(option, element) {
+            state.paymentOption = option;
+            document.querySelectorAll('.radio-button').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+            updateCalculations();
+        }
+
+        function setCurrency(currency, element) {
+            state.currency = currency;
+            document.querySelectorAll('.currency-button').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+            updateCalculations();
+        }
+
+        function toggleAdvanced() {
+            state.showAdvanced = !state.showAdvanced;
+            const section = document.getElementById('advancedSection');
+            const icon = document.getElementById('toggleIcon');
+            if (state.showAdvanced) {
+                section.classList.remove('hidden');
+                icon.textContent = '▲';
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                section.classList.add('hidden');
+                icon.textContent = '▼';
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function toggleManualLevy() {
+            const checkbox = document.getElementById('useManualLevy');
+            const input = document.getElementById('manualLevyAmount');
+            state.useManualLevy = checkbox.checked;
+            if (state.useManualLevy) {
+                input.disabled = false;
+                input.style.background = 'white';
+                input.focus();
+            } else {
+                input.disabled = true;
+                input.style.background = '#f3f4f6';
+                input.value = '';
+                state.manualLevyAmount = 0;
+            }
+        }
+
+        function resetExchangeRates() {
+            document.getElementById('usdThb').value = '32.32';
+            document.getElementById('usdHkd').value = '7.77';
+            document.getElementById('hkdThb').value = '4.16';
+            state.exchangeRates = { 'USD/THB': 32.32, 'USD/HKD': 7.77, 'HKD/THB': 4.16 };
+        }
+
+        function calculateResults() {
+            state.annualPremium = parseFloat(document.getElementById('annualPremium').value) || 0;
+            state.exchangeRates['USD/THB'] = parseFloat(document.getElementById('usdThb').value) || 32.32;
+            state.exchangeRates['USD/HKD'] = parseFloat(document.getElementById('usdHkd').value) || 7.77;
+            state.exchangeRates['HKD/THB'] = parseFloat(document.getElementById('hkdThb').value) || 4.16;
+            if (state.useManualLevy) {
+                state.manualLevyAmount = parseFloat(document.getElementById('manualLevyAmount').value) || 0;
+            }
+            document.getElementById('minimumText').textContent = `Min: ${formatCurrency(getMinimumPremium())}`;
+            renderResults();
+        }
+
+        function updateCalculations() {
+            document.getElementById('minimumText').textContent = `Min: ${formatCurrency(getMinimumPremium())}`;
+        }
+
+        function renderResults() {
+            const resultsSection = document.getElementById('resultsSection');
+            const premium = state.annualPremium;
+            if (!premium) {
+                resultsSection.innerHTML = `<div class="no-results"><div class="no-results-text">Enter annual premium to see calculation results</div></div>`;
+                return;
+            }
+            if (isPremiumBelowMinimum()) {
+                resultsSection.innerHTML = `<div class="error-card"><div class="error-text">Premium below minimum: ${formatCurrency(getMinimumPremium())}</div></div>`;
+                return;
+            }
+            const standardPayment = calculateStandardPaymentOption();
+            const prepaymentOption = calculatePrepaymentOption();
+            const basicRebate = calculateBasicRebate();
+            const levy = calculateLevy();
+            const totalPremiumPaidWithLevy = (premium * (state.paymentOption === '2-pay' ? 2 : 5)) + levy.total;
+            resultsSection.innerHTML = `
+                <div class="results-grid">
+                    <div class="result-card standard">
+                        <div class="card-title">Standard Payment</div>
+                        <div class="card-amount">${formatCurrency(standardPayment.totalCost)}</div>
+                        <div class="card-subtitle">Pay annually + Basic Rebate</div>
+                        <div class="details-container">
+                            <div class="detail-row"><span>Total Discount:</span><span class="discount-amount">${formatCurrency(basicRebate)}</span></div>
+                            <div class="detail-row"><span>Discount %:</span><span class="discount-amount">${((basicRebate / totalPremiumPaidWithLevy) * 100).toFixed(1)}%</span></div>
+                            <div class="detail-row final"><span class="final-label">Final Total:</span><span class="final-amount standard">${formatCurrency(standardPayment.totalCost)}</span></div>
+                        </div>
+                    </div>
+                    <div class="result-card ${state.currency === 'USD' ? 'prepayment' : 'unavailable'}">
+                        <div class="card-title">Prepayment Option</div>
+                        ${state.currency === 'USD' ? `
+                            <div class="card-amount">${formatCurrency(prepaymentOption.adjustedFinalAmount)}</div>
+                            <div class="card-subtitle">Pay all premiums upfront</div>
+                            <div class="details-container">
+                                <div class="detail-row"><span>Total Discount:</span><span class="discount-amount">${formatCurrency(prepaymentOption.greenOfferBenefit + prepaymentOption.basicRebate)}</span></div>
+                                <div class="detail-row"><span>Discount %:</span><span class="discount-amount">${(((prepaymentOption.greenOfferBenefit + prepaymentOption.basicRebate) / totalPremiumPaidWithLevy) * 100).toFixed(1)}%</span></div>
+                                <div class="detail-row final"><span class="final-label">Final Amount:</span><span class="final-amount prepayment">${formatCurrency(prepaymentOption.adjustedFinalAmount)}</span></div>
+                            </div>
+                        ` : `
+                            <div class="unavailable-text">Not Available</div>
+                            <div class="card-subtitle">USD policies only</div>
+                            <div class="details-container">
+                                <div class="detail-row"><span>Total Discount:</span><span class="discount-amount">${formatCurrency(basicRebate)}</span></div>
+                                <div class="detail-row"><span>Discount %:</span><span class="discount-amount">${((basicRebate / totalPremiumPaidWithLevy) * 100).toFixed(1)}%</span></div>
+                            </div>
+                        `}
+                    </div>
+                    ${state.currency === 'USD' ? `
+                        <div class="result-card goal-seek-card">
+                            <div class="card-title">Goal Seek Calculator</div>
+                            <div class="card-subtitle">Find required annual premium for target final amount</div>
+                            <div class="goal-seek-container">
+                                <input type="number" id="goalSeekTarget" class="text-input" placeholder="Target final amount" inputmode="numeric">
+                                <button class="goal-seek-button" onclick="calculateGoalSeek()">Calculate Required Premium</button>
+                                <div id="goalSeekResult"></div>
+                            </div>
+                        </div>
+                    ` : ''}
+                    <div class="action-buttons">
+                        <button class="action-button share" onclick="shareResults()">📤 Share Results</button>
+                        <button class="action-button analysis" onclick="showFullAnalysis()">📊 Full Analysis</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function calculateGoalSeek() {
+            const goalSeekTarget = parseFloat(document.getElementById('goalSeekTarget').value);
+            if (!goalSeekTarget || state.currency !== 'USD') {
+                alert('Goal Seek is only available for USD currency and requires a target amount.');
+                return;
+            }
+            let low = 1000, high = 1000000, bestPremium = 0, bestDifference = Infinity;
+            const tolerance = 0.01, maxIterations = 100;
+            const originalPremium = state.annualPremium;
+            for (let iteration = 0; iteration < maxIterations; iteration++) {
+                const testPremium = (low + high) / 2;
+                state.annualPremium = testPremium;
+                const testResult = calculatePrepaymentOption();
+                const difference = testResult.adjustedFinalAmount - goalSeekTarget;
+                if (Math.abs(difference) < Math.abs(bestDifference)) {
+                    bestDifference = difference;
+                    bestPremium = testPremium;
+                }
+                if (Math.abs(difference) < tolerance) break;
+                if (difference > 0) high = testPremium;
+                else low = testPremium;
+            }
+            state.annualPremium = originalPremium;
+            state.annualPremium = bestPremium;
+            const finalResult = calculatePrepaymentOption();
+            state.annualPremium = originalPremium;
+            const resultDiv = document.getElementById('goalSeekResult');
+            resultDiv.innerHTML = `
+                <div class="goal-seek-result">
+                    <div class="result-amount">${formatCurrency(bestPremium)}</div>
+                    <div class="result-label">Required Annual Premium</div>
+                    <div class="result-details">
+                        <div>Basic Rebate Rate: ${getBasicRebateRate(bestPremium)}%</div>
+                        <div>Final Payment: ${formatCurrency(finalResult.adjustedFinalAmount)}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function shareResults() {
+            const premium = state.annualPremium;
+            if (!premium) return;
+            const standardPayment = calculateStandardPaymentOption();
+            const prepaymentOption = calculatePrepaymentOption();
+            const message = `SunJoy Global Calculator Results
+Payment: ${state.paymentOption} | Currency: ${state.currency}
+Annual Premium: ${formatCurrency(premium)}
+
+Standard Payment: ${formatCurrency(standardPayment.totalCost)}
+${state.currency === 'USD' ? `Prepayment: ${formatCurrency(prepaymentOption.adjustedFinalAmount)}` : 'Prepayment: Not available'}
+
+Generated by SunJoy Calculator Mobile`;
+            if (navigator.share) {
+                navigator.share({ title: 'SunJoy Calculator Results', text: message }).catch(console.log);
+            } else if (navigator.clipboard) {
+                navigator.clipboard.writeText(message).then(() => {
+                    alert('Results copied to clipboard! 📋');
+                }).catch(() => {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = message;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    alert('Results copied to clipboard! 📋');
+                });
+            }
+        }
+
+        function showFullAnalysis() {
+            const premium = state.annualPremium;
+            if (!premium) return;
+            const standardPayment = calculateStandardPaymentOption();
+            const prepaymentOption = calculatePrepaymentOption();
+            const basicRebate = calculateBasicRebate();
+            const rebateRate = getBasicRebateRate();
+            const levy = calculateLevy();
+            document.getElementById('modalBody').innerHTML = `
+                <div class="analysis-card">
+                    <div class="analysis-title">Policy Summary</div>
+                    <div style="font-size: 12px; color: #374151;">
+                        <div style="margin-bottom: 4px;">Payment: ${state.paymentOption}</div>
+                        <div style="margin-bottom: 4px;">Currency: ${state.currency}</div>
+                        <div style="margin-bottom: 4px;">Premium: ${formatCurrency(premium)}</div>
+                        <div>Rebate Rate: ${rebateRate}%</div>
+                    </div>
+                </div>
+                <div class="analysis-card">
+                    <div class="analysis-title">Payment Details</div>
+                    <div style="font-size: 12px; font-weight: 600; color: #1d4ed8; margin: 12px 0 8px 0;">Standard Payment</div>
+                    ${standardPayment.yearByYear.map(yearData => `
+                        <div style="background: white; padding: 8px; border-radius: 6px; margin: 4px 0; font-size: 11px;">
+                            <div style="font-weight: 600; color: #374151;">Year ${yearData.year}:</div>
+                            <div style="color: #6b7280;">Premium: ${formatCurrency(yearData.premium)}</div>
+                            ${yearData.rebate > 0 ? `<div style="color: #16a34a;">Rebate: -${formatCurrency(yearData.rebate)}</div>` : ''}
+                            <div style="color: #6b7280;">Levy: ${formatCurrency(yearData.levy)}</div>
+                            <div style="font-weight: 600; color: #374151; border-top: 1px solid #e5e7eb; padding-top: 4px; margin-top: 4px;">Total: ${formatCurrency(yearData.total)}</div>
+                        </div>
+                    `).join('')}
+                    <div style="font-size: 12px; font-weight: bold; color: #1d4ed8; text-align: center; margin-top: 8px;">Total Cost: ${formatCurrency(standardPayment.totalCost)}</div>
+                    ${state.currency === 'USD' ? `
+                        <div style="font-size: 12px; font-weight: 600; color: #1d4ed8; margin: 12px 0 8px 0;">Prepayment Option</div>
+                        <div style="font-size: 11px; color: #374151; margin-bottom: 4px;">Premium Deposit: ${formatCurrency(prepaymentOption.premiumDepositFund)}</div>
+                        <div style="font-size: 11px; color: #374151; margin-bottom: 4px;">Total Levy: ${formatCurrency(levy.total)}</div>
+                        <div style="font-size: 11px; color: #16a34a; margin-bottom: 4px;">Green Benefit: -${formatCurrency(prepaymentOption.greenOfferBenefit)}</div>
+                        <div style="font-size: 11px; color: #16a34a; margin-bottom: 4px;">Basic Rebate: -${formatCurrency(prepaymentOption.basicRebate)}</div>
+                        <div style="font-size: 12px; font-weight: bold; color: #1d4ed8; text-align: center; margin-top: 8px;">Final Amount: ${formatCurrency(prepaymentOption.adjustedFinalAmount)}</div>
+                    ` : ''}
+                </div>
+                ${state.currency === 'USD' ? `
+                    <div class="analysis-card" style="background: #fefce8; border-color: #fef08a;">
+                        <div class="analysis-title">Cost Comparison</div>
+                        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;"><span>Standard:</span><span>${formatCurrency(standardPayment.totalCost)}</span></div>
+                        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;"><span>Prepayment:</span><span>${formatCurrency(prepaymentOption.adjustedFinalAmount)}</span></div>
+                        <div style="display: flex; justify-content: space-between; font-size: 12px; border-top: 1px solid #fef08a; padding-top: 8px; margin-top: 8px; font-weight: bold;"><span>Total Savings:</span><span style="color: #16a34a;">${formatCurrency(standardPayment.totalCost - prepaymentOption.adjustedFinalAmount)}</span></div>
+                        <div style="font-size: 10px; color: #6b7280; text-align: center; margin-top: 4px;">(${(((standardPayment.totalCost - prepaymentOption.adjustedFinalAmount) / standardPayment.totalCost) * 100).toFixed(1)}% savings)</div>
+                        <div style="padding: 12px; border-radius: 6px; margin-top: 16px; text-align: center; font-size: 12px; font-weight: bold; background: ${prepaymentOption.adjustedFinalAmount < standardPayment.totalCost ? '#f0fdf4' : '#dbeafe'}; border: 1px solid ${prepaymentOption.adjustedFinalAmount < standardPayment.totalCost ? '#86efac' : '#93c5fd'}; color: ${prepaymentOption.adjustedFinalAmount < standardPayment.totalCost ? '#15803d' : '#1d4ed8'};">${prepaymentOption.adjustedFinalAmount < standardPayment.totalCost ? '✅ RECOMMENDED: Prepayment' : '💭 CONSIDER: Standard Payment'}</div>
+                    </div>
+                ` : ''}
+            `;
+            document.getElementById('modalOverlay').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+        }
+
+        function promptInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        document.getElementById('installBanner').classList.remove('show');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        }
+
+        function initializeApp() {
+            const promotionBanner = document.getElementById('promotionBanner');
+            const promotionStatus = document.getElementById('promotionStatus');
+            if (isPromotionActive()) {
+                promotionBanner.classList.add('active');
+                promotionBanner.classList.remove('inactive');
+                promotionStatus.textContent = '✅ Currently Active';
+            } else {
+                promotionBanner.classList.add('inactive');
+                promotionBanner.classList.remove('active');
+                promotionStatus.textContent = '❌ Not Active';
+            }
+            updateCalculations();
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBanner').classList.add('show');
+        });
+
+        window.addEventListener('appinstalled', () => {
+            document.getElementById('installBanner').classList.remove('show');
+            deferredPrompt = null;
+        });
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(() => {
+                console.log('Service Worker registered');
+            }).catch((error) => {
+                console.log('Service Worker registration failed:', error);
+            });
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeApp);
+        } else {
+            initializeApp();
+        }
+
+        if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+            document.addEventListener('touchstart', function() {}, {passive: true});
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
