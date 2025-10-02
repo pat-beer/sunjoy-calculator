@@ -1,6 +1,6 @@
 // อัปเดต TIMESTAMP ทุกครั้งที่มีการเปลี่ยนแปลงไฟล์
 // Format: YYYYMMDD-HHMM (เช่น 20250103-1430 = 3 ม.ค. 2025 เวลา 14:30)
-const TIMESTAMP = '20251002-1255';
+const TIMESTAMP = '20251002-1322';
 const CACHE_NAME = `sunjoy-calculator-${TIMESTAMP}`;
 
 const urlsToCache = [
