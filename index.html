@@ -362,15 +362,15 @@
         </div>
 
         <div class="update-notice">
-            อัตราแลกเปลี่ยนล่าสุด: USD/THB 32.32, USD/HKD 7.77, HKD/THB 4.16 (1 ต.ค. 2025 19:30)
+            อัตราแลกเปลี่ยนล่าสุด: USD/THB 32.38, USD/HKD 7.77, HKD/THB 4.17 (30 ต.ค. 2025)
         </div>
 
         <div id="promotionBanner" class="promotion-banner">
             <div id="promotionText">
-                Promotion Period: October 1 - October 31, 2025 | <span id="promotionStatus"></span>
+                Promotion Period: November 1 - November 30, 2025 | <span id="promotionStatus"></span>
             </div>
             <div style="margin-top: 5px; font-size: 11px; opacity: 0.8;">
-                Policy Issue Date: on or before November 30, 2025
+                Policy Issue Date: on or before December 31, 2025
             </div>
         </div>
 
@@ -424,7 +424,7 @@
                 </div>
 
                 <button class="advanced-toggle" onclick="toggleAdvanced()">
-                    <span>Exchange Rates (Updated Sep 2025)</span>
+                    <span>Exchange Rates (Updated Oct 2025)</span>
                     <span class="toggle-icon" id="toggleIcon">▼</span>
                 </button>
 
@@ -432,7 +432,7 @@
                     <div class="exchange-grid">
                         <div class="exchange-input">
                             <label>USD/THB</label>
-                            <input type="number" step="0.01" id="usdThb" value="32.32">
+                            <input type="number" step="0.01" id="usdThb" value="32.38">
                         </div>
                         <div class="exchange-input">
                             <label>USD/HKD</label>
@@ -440,7 +440,7 @@
                         </div>
                         <div class="exchange-input">
                             <label>HKD/THB</label>
-                            <input type="number" step="0.01" id="hkdThb" value="4.16">
+                            <input type="number" step="0.01" id="hkdThb" value="4.17">
                         </div>
                     </div>
                     <button class="reset-button" onclick="resetExchangeRates()">Reset to Current Rates</button>
@@ -470,7 +470,7 @@
     <script>
         let state = {
             paymentOption: '2-pay', currency: 'USD', annualPremium: 0,
-            exchangeRates: { 'USD/THB': 32.32, 'USD/HKD': 7.77, 'HKD/THB': 4.16 },
+            exchangeRates: { 'USD/THB': 32.38, 'USD/HKD': 7.77, 'HKD/THB': 4.17 },
             showAdvanced: false, useManualLevy: false, manualLevyAmount: 0
         };
         const basicRebateTable = {
@@ -556,7 +556,7 @@
                 premiumDepositFund = premium + pvYear2;
                 greenOfferBenefit = premium - pvYear2;
             } else {
-                const rate1 = 0.055, rate2Plus = 0.048;
+                const rate1 = 0.055, rate2Plus = 0.043;
                 const pv1 = premium, pv2 = premium / (1 + rate1);
                 const pv3 = premium / (1 + rate1) / (1 + rate2Plus);
                 const pv4 = premium / (1 + rate1) / Math.pow(1 + rate2Plus, 2);
@@ -590,7 +590,7 @@
             return state.annualPremium > 0 && state.annualPremium < getMinimumPremium();
         }
         function isPromotionActive() {
-            const today = new Date(), startDate = new Date('2025-10-01'), endDate = new Date('2025-10-31');
+            const today = new Date(), startDate = new Date('2025-11-01'), endDate = new Date('2025-11-30');
             return today >= startDate && today <= endDate;
         }
         function setPaymentOption(option, element) {
@@ -631,16 +631,16 @@
             }
         }
         function resetExchangeRates() {
-            document.getElementById('usdThb').value = '32.32';
+            document.getElementById('usdThb').value = '32.38';
             document.getElementById('usdHkd').value = '7.77';
-            document.getElementById('hkdThb').value = '4.16';
-            state.exchangeRates = { 'USD/THB': 32.32, 'USD/HKD': 7.77, 'HKD/THB': 4.16 };
+            document.getElementById('hkdThb').value = '4.17';
+            state.exchangeRates = { 'USD/THB': 32.38, 'USD/HKD': 7.77, 'HKD/THB': 4.17 };
         }
         function calculateResults() {
             state.annualPremium = parseFloat(document.getElementById('annualPremium').value) || 0;
-            state.exchangeRates['USD/THB'] = parseFloat(document.getElementById('usdThb').value) || 32.32;
+            state.exchangeRates['USD/THB'] = parseFloat(document.getElementById('usdThb').value) || 32.38;
             state.exchangeRates['USD/HKD'] = parseFloat(document.getElementById('usdHkd').value) || 7.77;
-            state.exchangeRates['HKD/THB'] = parseFloat(document.getElementById('hkdThb').value) || 4.16;
+            state.exchangeRates['HKD/THB'] = parseFloat(document.getElementById('hkdThb').value) || 4.17;
             if (state.useManualLevy) state.manualLevyAmount = parseFloat(document.getElementById('manualLevyAmount').value) || 0;
             document.getElementById('minimumText').textContent = `Min: ${formatCurrency(getMinimumPremium())}`;
             renderResults();
