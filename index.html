@@ -552,11 +552,11 @@
             const basicRebateAmount = calculateBasicRebate(), levy = calculateLevy();
             let premiumDepositFund = 0, greenOfferBenefit = 0;
             if (state.paymentOption === '2-pay') {
-                const interestRate = 0.055, pvYear2 = premium / (1 + interestRate);
+                const interestRate = 0.05, pvYear2 = premium / (1 + interestRate);
                 premiumDepositFund = premium + pvYear2;
                 greenOfferBenefit = premium - pvYear2;
             } else {
-                const rate1 = 0.055, rate2Plus = 0.043;
+                const rate1 = 0.05, rate2Plus = 0.043;
                 const pv1 = premium, pv2 = premium / (1 + rate1);
                 const pv3 = premium / (1 + rate1) / (1 + rate2Plus);
                 const pv4 = premium / (1 + rate1) / Math.pow(1 + rate2Plus, 2);
