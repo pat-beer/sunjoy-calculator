@@ -1,8 +1,8 @@
 // Service Worker for SunJoy Calculator PWA
-// Version: Jan-Feb 2026 Promotion
-// Last Updated: October 30, 2025
+// Version: Jan-Feb 2026 Promotion (Exchange Rate Update)
+// Last Updated: February 12, 2026
 
-const TIMESTAMP = '20251030-1630'; // ⚠️ Update this timestamp when updating files
+const TIMESTAMP = '20260212-1000'; // ⚠️ Update this timestamp when updating files
 const CACHE_NAME = `sunjoy-calculator-${TIMESTAMP}`;
 
 const urlsToCache = [
