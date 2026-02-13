@@ -367,10 +367,10 @@
 
         <div id="promotionBanner" class="promotion-banner">
             <div id="promotionText">
-                Promotion Period: November 1 - November 30, 2025 | <span id="promotionStatus"></span>
+                Promotion Period: January 1 - February 28, 2026 | <span id="promotionStatus"></span>
             </div>
             <div style="margin-top: 5px; font-size: 11px; opacity: 0.8;">
-                Policy Issue Date: on or before December 31, 2025
+                Policy Issue Date: on or before March 31, 2026
             </div>
         </div>
 
@@ -475,20 +475,20 @@
         };
         const basicRebateTable = {
             '2-pay': {
-                'USD': [{ min: 100000, rate: 4.8 }, { min: 20000, rate: 2 }],
-                'CAD': [{ min: 120000, rate: 4.8 }, { min: 24000, rate: 2 }],
-                'GBP': [{ min: 70000, rate: 4.8 }, { min: 14000, rate: 2 }],
-                'RMB': [{ min: 700000, rate: 4.8 }, { min: 140000, rate: 2 }],
-                'AUD': [{ min: 150000, rate: 4.8 }, { min: 30000, rate: 2 }],
-                'HKD': [{ min: 800000, rate: 4.8 }, { min: 160000, rate: 2 }]
+                'USD': [{ min: 100000, rate: 5 }, { min: 20000, rate: 2.2 }],
+                'CAD': [{ min: 120000, rate: 5 }, { min: 24000, rate: 2.2 }],
+                'GBP': [{ min: 70000, rate: 5 }, { min: 14000, rate: 2.2 }],
+                'RMB': [{ min: 700000, rate: 5 }, { min: 140000, rate: 2.2 }],
+                'AUD': [{ min: 150000, rate: 5 }, { min: 30000, rate: 2.2 }],
+                'HKD': [{ min: 800000, rate: 5 }, { min: 160000, rate: 2.2 }]
             },
             '5-pay': {
-                'USD': [{ min: 200000, rate: 28 }, { min: 100000, rate: 26 }, { min: 50000, rate: 24 }, { min: 30000, rate: 18 }, { min: 10000, rate: 12 }],
-                'CAD': [{ min: 240000, rate: 28 }, { min: 120000, rate: 26 }, { min: 60000, rate: 24 }, { min: 36000, rate: 18 }, { min: 12000, rate: 12 }],
-                'GBP': [{ min: 140000, rate: 28 }, { min: 70000, rate: 26 }, { min: 35000, rate: 24 }, { min: 21000, rate: 18 }, { min: 7000, rate: 12 }],
-                'RMB': [{ min: 1400000, rate: 28 }, { min: 700000, rate: 26 }, { min: 350000, rate: 24 }, { min: 210000, rate: 18 }, { min: 70000, rate: 12 }],
-                'AUD': [{ min: 300000, rate: 28 }, { min: 150000, rate: 26 }, { min: 75000, rate: 24 }, { min: 45000, rate: 18 }, { min: 15000, rate: 12 }],
-                'HKD': [{ min: 1600000, rate: 28 }, { min: 800000, rate: 26 }, { min: 400000, rate: 24 }, { min: 240000, rate: 18 }, { min: 80000, rate: 12 }]
+                'USD': [{ min: 1000000, rate: 30 }, { min: 200000, rate: 29 }, { min: 100000, rate: 27 }, { min: 50000, rate: 25 }, { min: 30000, rate: 19 }, { min: 10000, rate: 13 }],
+                'CAD': [{ min: 1200000, rate: 30 }, { min: 240000, rate: 29 }, { min: 120000, rate: 27 }, { min: 60000, rate: 25 }, { min: 36000, rate: 19 }, { min: 12000, rate: 13 }],
+                'GBP': [{ min: 700000, rate: 30 }, { min: 140000, rate: 29 }, { min: 70000, rate: 27 }, { min: 35000, rate: 25 }, { min: 21000, rate: 19 }, { min: 7000, rate: 13 }],
+                'RMB': [{ min: 7000000, rate: 30 }, { min: 1400000, rate: 29 }, { min: 700000, rate: 27 }, { min: 350000, rate: 25 }, { min: 210000, rate: 19 }, { min: 70000, rate: 13 }],
+                'AUD': [{ min: 1500000, rate: 30 }, { min: 300000, rate: 29 }, { min: 150000, rate: 27 }, { min: 75000, rate: 25 }, { min: 45000, rate: 19 }, { min: 15000, rate: 13 }],
+                'HKD': [{ min: 8000000, rate: 30 }, { min: 1600000, rate: 29 }, { min: 800000, rate: 27 }, { min: 400000, rate: 25 }, { min: 240000, rate: 19 }, { min: 80000, rate: 13 }]
             }
         };
         const minimumPremiums = {
@@ -590,7 +590,7 @@
             return state.annualPremium > 0 && state.annualPremium < getMinimumPremium();
         }
         function isPromotionActive() {
-            const today = new Date(), startDate = new Date('2025-11-01'), endDate = new Date('2025-11-30');
+            const today = new Date(), startDate = new Date('2026-01-01'), endDate = new Date('2026-02-28');
             return today >= startDate && today <= endDate;
         }
         function setPaymentOption(option, element) {
