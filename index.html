@@ -362,15 +362,15 @@
         </div>
 
         <div class="update-notice">
-            อัตราแลกเปลี่ยนล่าสุด: USD/THB 32.67, USD/HKD 7.77, HKD/THB 4.16 (30 เม.ย. 2026)
+            อัตราแลกเปลี่ยนล่าสุด: USD/THB 32.57, HKD/THB 4.16, RMB/THB 4.81, CAD/THB 23.57, GBP/THB 43.76, AUD/THB 23.30, SGD/THB 25.47, EUR/THB 37.95, AED/THB 8.87 (29 พ.ค. 2026)
         </div>
 
         <div id="promotionBanner" class="promotion-banner">
             <div id="promotionText">
-                Promotion Period: April 1 - May 31, 2026 | <span id="promotionStatus"></span>
+                Promotion Period: June 1 - July 31, 2026 | <span id="promotionStatus"></span>
             </div>
             <div style="margin-top: 5px; font-size: 11px; opacity: 0.8;">
-                Policy Issue Date: on or before June 30, 2026
+                Policy Issue Date: on or before August 31, 2026
             </div>
         </div>
 
@@ -393,6 +393,9 @@
                         <button class="currency-button" onclick="setCurrency('RMB', this)">RMB</button>
                         <button class="currency-button" onclick="setCurrency('AUD', this)">AUD</button>
                         <button class="currency-button" onclick="setCurrency('HKD', this)">HKD</button>
+                        <button class="currency-button" onclick="setCurrency('SGD', this)">SGD</button>
+                        <button class="currency-button" onclick="setCurrency('EUR', this)">EUR</button>
+                        <button class="currency-button" onclick="setCurrency('AED', this)">AED</button>
                     </div>
                 </div>
 
@@ -424,7 +427,7 @@
                 </div>
 
                 <button class="advanced-toggle" onclick="toggleAdvanced()">
-                    <span>Exchange Rates (Updated Oct 2025)</span>
+                    <span>Exchange Rates (Updated May 2026)</span>
                     <span class="toggle-icon" id="toggleIcon">▼</span>
                 </button>
 
@@ -432,15 +435,39 @@
                     <div class="exchange-grid">
                         <div class="exchange-input">
                             <label>USD/THB</label>
-                            <input type="number" step="0.01" id="usdThb" value="32.67">
-                        </div>
-                        <div class="exchange-input">
-                            <label>USD/HKD</label>
-                            <input type="number" step="0.01" id="usdHkd" value="7.77">
+                            <input type="number" step="0.01" id="usdThb" value="32.57">
                         </div>
                         <div class="exchange-input">
                             <label>HKD/THB</label>
                             <input type="number" step="0.01" id="hkdThb" value="4.16">
+                        </div>
+                        <div class="exchange-input">
+                            <label>RMB/THB</label>
+                            <input type="number" step="0.01" id="rmbThb" value="4.81">
+                        </div>
+                        <div class="exchange-input">
+                            <label>CAD/THB</label>
+                            <input type="number" step="0.01" id="cadThb" value="23.57">
+                        </div>
+                        <div class="exchange-input">
+                            <label>GBP/THB</label>
+                            <input type="number" step="0.01" id="gbpThb" value="43.76">
+                        </div>
+                        <div class="exchange-input">
+                            <label>AUD/THB</label>
+                            <input type="number" step="0.01" id="audThb" value="23.30">
+                        </div>
+                        <div class="exchange-input">
+                            <label>SGD/THB</label>
+                            <input type="number" step="0.01" id="sgdThb" value="25.47">
+                        </div>
+                        <div class="exchange-input">
+                            <label>EUR/THB</label>
+                            <input type="number" step="0.01" id="eurThb" value="37.95">
+                        </div>
+                        <div class="exchange-input">
+                            <label>AED/THB</label>
+                            <input type="number" step="0.01" id="aedThb" value="8.87">
                         </div>
                     </div>
                     <button class="reset-button" onclick="resetExchangeRates()">Reset to Current Rates</button>
@@ -470,32 +497,46 @@
     <script>
         let state = {
             paymentOption: '2-pay', currency: 'USD', annualPremium: 0,
-            exchangeRates: { 'USD/THB': 32.67, 'USD/HKD': 7.77, 'HKD/THB': 4.16 },
+            exchangeRates: {
+                'USD/THB': 32.57, 'HKD/THB': 4.16, 'RMB/THB': 4.81,
+                'CAD/THB': 23.57, 'GBP/THB': 43.76, 'AUD/THB': 23.30,
+                'SGD/THB': 25.47, 'EUR/THB': 37.95, 'AED/THB': 8.87,
+                'USD/HKD': 7.83 // USD/HKD = USD/THB ÷ HKD/THB
+            },
             showAdvanced: false, useManualLevy: false, manualLevyAmount: 0
         };
         const basicRebateTable = {
             '2-pay': {
-                'USD': [{ min: 100000, rate: 4.5 }, { min: 20000, rate: 2 }],
-                'CAD': [{ min: 120000, rate: 4.5 }, { min: 24000, rate: 2 }],
-                'GBP': [{ min: 70000, rate: 4.5 }, { min: 14000, rate: 2 }],
-                'RMB': [{ min: 700000, rate: 4.5 }, { min: 140000, rate: 2 }],
-                'AUD': [{ min: 150000, rate: 4.5 }, { min: 30000, rate: 2 }],
-                'HKD': [{ min: 800000, rate: 4.5 }, { min: 160000, rate: 2 }]
+                'USD': [{ min: 200000, rate: 5 }, { min: 100000, rate: 4.5 }, { min: 20000, rate: 2 }],
+                'CAD': [{ min: 240000, rate: 5 }, { min: 120000, rate: 4.5 }, { min: 24000, rate: 2 }],
+                'GBP': [{ min: 140000, rate: 5 }, { min: 70000,  rate: 4.5 }, { min: 14000, rate: 2 }],
+                'RMB': [{ min: 1400000, rate: 5 }, { min: 700000, rate: 4.5 }, { min: 140000, rate: 2 }],
+                'AUD': [{ min: 300000, rate: 5 }, { min: 150000, rate: 4.5 }, { min: 30000, rate: 2 }],
+                'HKD': [{ min: 1600000, rate: 5 }, { min: 800000, rate: 4.5 }, { min: 160000, rate: 2 }],
+                'SGD': [{ min: 260000, rate: 5 }, { min: 130000, rate: 4.5 }, { min: 26000, rate: 2 }],
+                'EUR': [{ min: 180000, rate: 5 }, { min: 90000,  rate: 4.5 }, { min: 18000, rate: 2 }],
+                'AED': [{ min: 760000, rate: 5 }, { min: 380000, rate: 4.5 }, { min: 76000, rate: 2 }]
             },
             '5-pay': {
                 'USD': [{ min: 1000000, rate: 30 }, { min: 200000, rate: 28 }, { min: 100000, rate: 26 }, { min: 50000, rate: 23 }, { min: 30000, rate: 18 }, { min: 10000, rate: 12 }],
                 'CAD': [{ min: 1200000, rate: 30 }, { min: 240000, rate: 28 }, { min: 120000, rate: 26 }, { min: 60000, rate: 23 }, { min: 36000, rate: 18 }, { min: 12000, rate: 12 }],
-                'GBP': [{ min: 700000, rate: 30 }, { min: 140000, rate: 28 }, { min: 70000, rate: 26 }, { min: 35000, rate: 23 }, { min: 21000, rate: 18 }, { min: 7000, rate: 12 }],
+                'GBP': [{ min: 700000,  rate: 30 }, { min: 140000, rate: 28 }, { min: 70000,  rate: 26 }, { min: 35000, rate: 23 }, { min: 21000, rate: 18 }, { min: 7000,  rate: 12 }],
                 'RMB': [{ min: 7000000, rate: 30 }, { min: 1400000, rate: 28 }, { min: 700000, rate: 26 }, { min: 350000, rate: 23 }, { min: 210000, rate: 18 }, { min: 70000, rate: 12 }],
                 'AUD': [{ min: 1500000, rate: 30 }, { min: 300000, rate: 28 }, { min: 150000, rate: 26 }, { min: 75000, rate: 23 }, { min: 45000, rate: 18 }, { min: 15000, rate: 12 }],
-                'HKD': [{ min: 8000000, rate: 30 }, { min: 1600000, rate: 28 }, { min: 800000, rate: 26 }, { min: 400000, rate: 23 }, { min: 240000, rate: 18 }, { min: 80000, rate: 12 }]
+                'HKD': [{ min: 8000000, rate: 30 }, { min: 1600000, rate: 28 }, { min: 800000, rate: 26 }, { min: 400000, rate: 23 }, { min: 240000, rate: 18 }, { min: 80000, rate: 12 }],
+                'SGD': [{ min: 1300000, rate: 30 }, { min: 260000, rate: 28 }, { min: 130000, rate: 26 }, { min: 65000, rate: 23 }, { min: 39000, rate: 18 }, { min: 13000, rate: 12 }],
+                'EUR': [{ min: 900000,  rate: 30 }, { min: 180000, rate: 28 }, { min: 90000,  rate: 26 }, { min: 45000, rate: 23 }, { min: 27000, rate: 18 }, { min: 9000,  rate: 12 }],
+                'AED': [{ min: 3800000, rate: 30 }, { min: 760000, rate: 28 }, { min: 380000, rate: 26 }, { min: 190000, rate: 23 }, { min: 114000, rate: 18 }, { min: 38000, rate: 12 }]
             }
         };
         const minimumPremiums = {
-            '2-pay': { 'USD': 15000, 'CAD': 18000, 'GBP': 10500, 'RMB': 105000, 'AUD': 22500, 'HKD': 120000 },
-            '5-pay': { 'USD': 3000, 'CAD': 3600, 'GBP': 2100, 'RMB': 21000, 'AUD': 4500, 'HKD': 24000 }
+            '2-pay': { 'USD': 20000, 'CAD': 24000, 'GBP': 14000, 'RMB': 140000, 'AUD': 30000, 'HKD': 160000, 'SGD': 26000, 'EUR': 18000, 'AED': 76000 },
+            '5-pay': { 'USD': 10000, 'CAD': 12000, 'GBP': 7000,  'RMB': 70000,  'AUD': 15000, 'HKD': 80000,  'SGD': 13000, 'EUR': 9000,  'AED': 38000 }
         };
-        const usdRates = { 'CAD': 1.26, 'GBP': 0.72, 'RMB': 7.1, 'AUD': 1.5 };
+        // THB rate per unit of each currency (for levy conversion and THB display)
+        function getCurrencyTHBRate(currency) {
+            return state.exchangeRates[currency + '/THB'] || 1;
+        }
 
         function formatCurrency(amount, curr = null) {
             const currency = curr || state.currency;
@@ -525,27 +566,22 @@
                 return { yearly: state.manualLevyAmount, total: state.manualLevyAmount * paymentYears };
             }
             const levyRate = 0.001, maxLevyHKD = 100;
-            let yearlyLevy = targetPremium * levyRate, yearlyLevyInHKD;
-            if (state.currency === 'HKD') yearlyLevyInHKD = yearlyLevy;
-            else if (state.currency === 'USD') yearlyLevyInHKD = yearlyLevy * state.exchangeRates['USD/HKD'];
-            else {
-                const usdRate = usdRates[state.currency] || 1;
-                yearlyLevyInHKD = (yearlyLevy / usdRate) * state.exchangeRates['USD/HKD'];
-            }
+            let yearlyLevy = targetPremium * levyRate;
+            // แปลงเป็น HKD เพื่อเช็ค cap
+            const currTHB = getCurrencyTHBRate(state.currency);
+            const hkdTHB = getCurrencyTHBRate('HKD');
+            const yearlyLevyInHKD = yearlyLevy * currTHB / hkdTHB;
             if (yearlyLevyInHKD > maxLevyHKD) {
-                if (state.currency === 'HKD') yearlyLevy = maxLevyHKD;
-                else if (state.currency === 'USD') yearlyLevy = maxLevyHKD / state.exchangeRates['USD/HKD'];
-                else {
-                    const usdRate = usdRates[state.currency] || 1;
-                    yearlyLevy = (maxLevyHKD / state.exchangeRates['USD/HKD']) * usdRate;
-                }
+                yearlyLevy = maxLevyHKD * hkdTHB / currTHB;
             }
             const paymentYears = state.paymentOption === '2-pay' ? 2 : 5;
             return { yearly: yearlyLevy, total: yearlyLevy * paymentYears };
         }
         function calculatePrepaymentOption() {
             const premium = state.annualPremium;
-            if (!premium || state.currency !== 'USD') {
+            const eligible2pay = (state.paymentOption === '2-pay' && (state.currency === 'USD' || state.currency === 'RMB'));
+            const eligible5pay = (state.paymentOption === '5-pay' && state.currency === 'USD');
+            if (!premium || (!eligible2pay && !eligible5pay)) {
                 return { premiumDepositFund: 0, totalPrepayment: 0, basicRebate: calculateBasicRebate(),
                     greenOfferBenefit: 0, adjustedFinalAmount: 0 };
             }
@@ -590,7 +626,7 @@
             return state.annualPremium > 0 && state.annualPremium < getMinimumPremium();
         }
         function isPromotionActive() {
-            const today = new Date(), startDate = new Date('2026-04-01'), endDate = new Date('2026-05-31');
+            const today = new Date(), startDate = new Date('2026-06-01'), endDate = new Date('2026-07-31');
             return today >= startDate && today <= endDate;
         }
         function setPaymentOption(option, element) {
@@ -630,23 +666,33 @@
                 state.manualLevyAmount = 0;
             }
         }
-        function resetExchangeRates() {
-            document.getElementById('usdThb').value = '32.67';
-            document.getElementById('usdHkd').value = '7.77';
-            document.getElementById('hkdThb').value = '4.16';
-            state.exchangeRates = { 'USD/THB': 32.67, 'USD/HKD': 7.77, 'HKD/THB': 4.16 };
+        function updateCalculations() {
+            document.getElementById('minimumText').textContent = `Min: ${formatCurrency(getMinimumPremium())}`;
         }
         function calculateResults() {
             state.annualPremium = parseFloat(document.getElementById('annualPremium').value) || 0;
-            state.exchangeRates['USD/THB'] = parseFloat(document.getElementById('usdThb').value) || 32.67;
-            state.exchangeRates['USD/HKD'] = parseFloat(document.getElementById('usdHkd').value) || 7.77;
+            state.exchangeRates['USD/THB'] = parseFloat(document.getElementById('usdThb').value) || 32.57;
             state.exchangeRates['HKD/THB'] = parseFloat(document.getElementById('hkdThb').value) || 4.16;
+            state.exchangeRates['RMB/THB'] = parseFloat(document.getElementById('rmbThb').value) || 4.81;
+            state.exchangeRates['CAD/THB'] = parseFloat(document.getElementById('cadThb').value) || 23.57;
+            state.exchangeRates['GBP/THB'] = parseFloat(document.getElementById('gbpThb').value) || 43.76;
+            state.exchangeRates['AUD/THB'] = parseFloat(document.getElementById('audThb').value) || 23.30;
+            state.exchangeRates['SGD/THB'] = parseFloat(document.getElementById('sgdThb').value) || 25.47;
+            state.exchangeRates['EUR/THB'] = parseFloat(document.getElementById('eurThb').value) || 37.95;
+            state.exchangeRates['AED/THB'] = parseFloat(document.getElementById('aedThb').value) || 8.87;
             if (state.useManualLevy) state.manualLevyAmount = parseFloat(document.getElementById('manualLevyAmount').value) || 0;
             document.getElementById('minimumText').textContent = `Min: ${formatCurrency(getMinimumPremium())}`;
             renderResults();
         }
-        function updateCalculations() {
-            document.getElementById('minimumText').textContent = `Min: ${formatCurrency(getMinimumPremium())}`;
+        function resetExchangeRates() {
+            const defaults = { usdThb: 32.57, hkdThb: 4.16, rmbThb: 4.81, cadThb: 23.57, gbpThb: 43.76, audThb: 23.30, sgdThb: 25.47, eurThb: 37.95, aedThb: 8.87 };
+            Object.entries(defaults).forEach(([id, val]) => { document.getElementById(id).value = val; });
+            state.exchangeRates = {
+                'USD/THB': 32.57, 'HKD/THB': 4.16, 'RMB/THB': 4.81,
+                'CAD/THB': 23.57, 'GBP/THB': 43.76, 'AUD/THB': 23.30,
+                'SGD/THB': 25.47, 'EUR/THB': 37.95, 'AED/THB': 8.87,
+                'USD/HKD': 7.83
+            };
         }
         function renderResults() {
             const resultsSection = document.getElementById('resultsSection'), premium = state.annualPremium;
@@ -661,38 +707,44 @@
             const standardPayment = calculateStandardPaymentOption(), prepaymentOption = calculatePrepaymentOption();
             const basicRebate = calculateBasicRebate(), levy = calculateLevy();
             const totalPremiumPaidWithLevy = (premium * (state.paymentOption === '2-pay' ? 2 : 5)) + levy.total;
+            const isPrepayEligible = (state.paymentOption === '2-pay' && (state.currency === 'USD' || state.currency === 'RMB'))
+                                  || (state.paymentOption === '5-pay' && state.currency === 'USD');
+            const prepayNote = state.paymentOption === '2-pay' ? 'USD and RMB policies only' : 'USD policies only';
+            const currTHBRate = getCurrencyTHBRate(state.currency);
             resultsSection.innerHTML = `
                 <div class="results-grid">
                     <div class="result-card standard">
                         <div class="card-title">Standard Payment</div>
                         <div class="card-amount">${formatCurrency(standardPayment.totalCost)}</div>
-                        <div class="card-subtitle">Pay annually + Basic Rebate</div>
+                        <div class="card-subtitle">≈ ฿${Math.round(standardPayment.totalCost * currTHBRate).toLocaleString()}</div>
                         <div class="details-container">
                             <div class="detail-row"><span>Total Discount:</span><span class="discount-amount">${formatCurrency(basicRebate)}</span></div>
                             <div class="detail-row"><span>Discount %:</span><span class="discount-amount">${((basicRebate / totalPremiumPaidWithLevy) * 100).toFixed(1)}%</span></div>
+                            <div class="detail-row"><span>Levy (yearly):</span><span>${formatCurrency(levy.yearly)}</span></div>
                             <div class="detail-row final"><span class="final-label">Final Total:</span><span class="final-amount standard">${formatCurrency(standardPayment.totalCost)}</span></div>
                         </div>
                     </div>
-                    <div class="result-card ${state.currency === 'USD' ? 'prepayment' : 'unavailable'}">
+                    <div class="result-card ${isPrepayEligible ? 'prepayment' : 'unavailable'}">
                         <div class="card-title">Prepayment Option</div>
-                        ${state.currency === 'USD' ? `
+                        ${isPrepayEligible ? `
                             <div class="card-amount">${formatCurrency(prepaymentOption.adjustedFinalAmount)}</div>
-                            <div class="card-subtitle">Pay all premiums upfront</div>
+                            <div class="card-subtitle">≈ ฿${Math.round(prepaymentOption.adjustedFinalAmount * currTHBRate).toLocaleString()}</div>
                             <div class="details-container">
+                                <div class="detail-row"><span>Green Offer Benefit:</span><span class="discount-amount">-${formatCurrency(prepaymentOption.greenOfferBenefit)}</span></div>
                                 <div class="detail-row"><span>Total Discount:</span><span class="discount-amount">${formatCurrency(prepaymentOption.greenOfferBenefit + prepaymentOption.basicRebate)}</span></div>
                                 <div class="detail-row"><span>Discount %:</span><span class="discount-amount">${(((prepaymentOption.greenOfferBenefit + prepaymentOption.basicRebate) / totalPremiumPaidWithLevy) * 100).toFixed(1)}%</span></div>
                                 <div class="detail-row final"><span class="final-label">Final Amount:</span><span class="final-amount prepayment">${formatCurrency(prepaymentOption.adjustedFinalAmount)}</span></div>
                             </div>
                         ` : `
                             <div class="unavailable-text">Not Available</div>
-                            <div class="card-subtitle">USD policies only</div>
+                            <div class="card-subtitle">${prepayNote}</div>
                             <div class="details-container">
                                 <div class="detail-row"><span>Total Discount:</span><span class="discount-amount">${formatCurrency(basicRebate)}</span></div>
                                 <div class="detail-row"><span>Discount %:</span><span class="discount-amount">${((basicRebate / totalPremiumPaidWithLevy) * 100).toFixed(1)}%</span></div>
                             </div>
                         `}
                     </div>
-                    ${state.currency === 'USD' ? `
+                    ${isPrepayEligible ? `
                         <div class="result-card goal-seek-card">
                             <div class="card-title">Goal Seek Calculator</div>
                             <div class="card-subtitle">Find required annual premium for target final amount</div>
@@ -712,8 +764,10 @@
         }
         function calculateGoalSeek() {
             const goalSeekTarget = parseFloat(document.getElementById('goalSeekTarget').value);
-            if (!goalSeekTarget || state.currency !== 'USD') {
-                alert('Goal Seek is only available for USD currency and requires a target amount.');
+            const isPrepayEligible = (state.paymentOption === '2-pay' && (state.currency === 'USD' || state.currency === 'RMB'))
+                                  || (state.paymentOption === '5-pay' && state.currency === 'USD');
+            if (!goalSeekTarget || !isPrepayEligible) {
+                alert('Goal Seek is only available for eligible currencies and requires a target amount.');
                 return;
             }
             let low = 1000, high = 1000000, bestPremium = 0, bestDifference = Infinity;
